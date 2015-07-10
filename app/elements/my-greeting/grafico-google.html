@@ -1,0 +1,81 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../../../bower_components/google-chart/google-chart.html">
+  
+<dom-module id="grafico-google">
+  <style>
+    :host {
+      display: block;
+    }
+    google-chart {
+          height: 300px;
+          width: auto;
+        }
+      
+
+    @media (max-width: 600px) {
+      h1.paper-font-display1 {
+        font-size: 24px;
+      }
+    }
+  </style>
+  <template>
+      
+        <!--google-chart
+          type='line'
+          options='{"title": "Days in a month"}'
+          cols='[ {"label": "Idade", "type": "string"},{"label": "Mamadas", "type": "number", "position":"bottom"} ]'
+          rows='[ ["1 mes", 31],["2 meses", 28],["3 meses", 31],["4 meses", 30],["5 meses", 31],["6 meses", 30],["7 meses", 67],["8 meses", 20],["9 meses", 50],["10 meses", 39],["11 meses", 83],["12 meses", 78] ]'>
+        </google-chart-->
+
+        <google-chart
+    type='line'
+    options='{"title": "Inventory"}'
+    data='[ ["Idade", "Maria Cecília", "Maria Alice"],
+           ["1 mes", 1000, 400],
+           ["2 meses", 1170, 460],
+           ["3 meses", 660, 1120],
+           ["4 meses", 1030, 540],
+           ["5 mes", 1000, 400],
+           ["6 meses", 1170, 460],
+           ["7 meses", 660, 1120],
+           ["8 meses", 1030, 540],
+           ["9 mes", 1000, 400],
+           ["10 meses", 1170, 460],
+           ["11 meses", 660, 1120],
+           ["12 meses", 1030, 540] ]'>
+  </google-chart>
+      
+    
+  </template>
+</dom-module>
+<script>
+  
+  (function() {
+  
+
+    Polymer({
+      is: 'grafico-google',
+
+
+      properties: {
+        greeting: {
+          type: String,
+          value: 'Olá',
+          notify: true
+        }
+      }
+    });
+
+
+
+
+  })();
+</script>

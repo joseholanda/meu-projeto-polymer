@@ -1,0 +1,158 @@
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
+<script src="../../scripts/highcharts/js/adapters/standalone-framework.js"></script>
+<script src="../../scripts/highcharts/js/highcharts.js"></script>
+
+<!--
+Element providing solution to no problem in particular.
+##### Example
+    <highcharts-basicline></highcharts-basicline>
+@element highcharts-basicline
+@blurb Polymer Element wrapper for highcharts.js chart with type 'baseline'
+@status alpha
+@homepage http://polymerlabs.github.io/highcharts-basicline
+-->
+<dom-module id="highcharts-basicline">
+                 <!--attributes="width height data xcategories charttitle subtitle ytitle tooltip legend"-->
+  <style type="text/css">
+  :host {
+    display: block;
+    margin: 5px;
+  }
+  </style>
+  <template>
+
+    
+    <div id="container" style="width:{{width}}; height:{{height}};"></div>
+    <iron-ajax auto id="ajax" url="{{data}}" handle-as="json" on-response="externalDataLoad">
+    </iron-ajax>
+
+     <iron-ajax auto id="ajaxElastic" method="POST" url="http://localhost:9200/mamadas/mamada/_search" 
+    body="[{"query":{"range" : {"dataHoraDaMamada" : {"gte":  "10/2012","lte":   "10/2013","format": "MM/yyyy"}}}}]"
+    handle-as="json" on-response="elasticResponse">
+    </iron-ajax>
+  </template>
+
+  <script>
+    Polymer({
+      /**
+       * The `author` attribute sets an initial author
+       *
+       * @attribute author
+       * @type string
+       * @default 'Alexander Vishnyakov'
+       */
+      is: 'highcharts-basicline',
+      properties: {
+        author: String,
+        data: Object,
+        series: Object,
+        xcategories: Object,
+        title: String,
+        ytitle: String,
+        subtitle: String,
+        tooltip: Object,
+        legend: Object,
+        yplotlines: Object,
+        width: String,
+        height: String,
+        observer: 'loadData'
+      },
+      ready: function() {
+        console.log("ready");
+      },
+      
+      created: function(){
+        /*(this.data = [];
+        this.series = [];
+        this.xcategories = [];
+        this.charttitle = '';
+        this.ytitle = '';
+        this.subtitle = '';*/
+        this.tooltip = {};
+        this.width='310px';
+        this.height='400px';
+        
+       /* this.yplotlines = [{
+          value: 0,
+          width: 1,
+          color: '#808080'
+        }];*/
+
+      },
+      drawChart: function(){
+        var options = {
+              chart:{
+                type: 'spline',
+                renderTo: this.$.container
+              },
+              title: {
+                text: this.title
+              },
+              subtitle: {
+                text: this.subtitle
+              },
+              xAxis: {
+                categories: this.xcategories
+              },
+              yAxis: {
+                title: {
+                  text: this.ytitle
+                }
+                //,plotLines: this.yplotlines
+              },
+              plotOptions: {
+                  line: {
+                      dataLabels: {
+                          enabled: true
+                      },
+                      enableMouseTracking: true
+                  }
+              }
+              ,tooltip: this.tooltip,
+              //legend: this.legend,
+              series: this.series
+          };
+        new Highcharts.Chart(options);
+      },
+      /*loadData: function() {
+
+        var ajax = this.$.ajax;
+
+        ajax.method = 'POST';
+        ajax.handleAs = 'JSON';
+        ajax.contentType = 'application/json';
+        ajax.params = JSON.stringify(this.queryElastic);
+
+        ajax.go();
+
+      },*/
+      loadData: function(){
+        console.log("loadData");
+        this.parseData(this.data);
+        this.drawChart();
+      },
+      parseData: function(data){
+        if (typeof data == 'string' || data instanceof String) {
+          this.$.ajax.go();
+        } else {
+          if(Array.isArray(data)) {
+            this.series = data;
+          }else{
+            this.series = data.series || [];
+            this.xcategories = data.xcategories || []
+          }
+        }
+      },
+      elasticResponse: function(e, detail, sender) {
+        console.log(detail.response);
+      },
+      externalDataLoad: function(e, detail, sender) {
+        console.log(detail.response);
+        this.parseData(detail.response);
+        this.fire('chartDataLoaded', {data: this.series});
+        this.drawChart();
+      }
+    });
+  </script>
+
+</dom-module>
